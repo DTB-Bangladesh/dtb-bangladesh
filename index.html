@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Twin Bangladesh | DTB</title>
+  <link rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #071827;
+      color: white;
+    }
+    header {
+      padding: 22px;
+      background: #0d2940;
+      text-align: center;
+    }
+    h1 { margin: 0; color: #55d6be; }
+    p { color: #c7d8e5; }
+    .info {
+      display: flex;
+      justify-content: space-around;
+      padding: 16px 5px;
+      text-align: center;
+    }
+    .info strong {
+      display: block;
+      font-size: 22px;
+      color: #55d6be;
+    }
+    #map {
+      height: 65vh;
+      min-height: 380px;
+      margin: 12px;
+      border-radius: 12px;
+    }
+    footer {
+      text-align: center;
+      padding: 16px;
+      color: #c7d8e5;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>DTB</h1>
+    <p>Digital Twin of Bangladesh</p>
+    <p>বাংলাদেশের ডিজিটাল মানচিত্র ও তথ্যভান্ডার</p>
+  </header>
+
+  <section class="info">
+    <div><strong>৮</strong>বিভাগ</div>
+    <div><strong>৬৪</strong>জেলা</div>
+    <div><strong>১</strong>দেশ</div>
+  </section>
+
+  <div id="map"></div>
+
+  <footer>
+    DTB — Initial Prototype | Version 1.0
+    <p>Map data © OpenStreetMap contributors</p>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const map = L.map('map').setView([23.685, 90.3563], 7);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    L.marker([23.8103, 90.4125])
+      .addTo(map)
+      .bindPopup('ঢাকা, বাংলাদেশ');
+
+    L.marker([22.3569, 91.7832])
+      .addTo(map)
+      .bindPopup('চট্টগ্রাম, বাংলাদেশ');
+  </script>
+</body>
+</html>
