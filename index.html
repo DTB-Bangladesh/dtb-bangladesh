@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -18,16 +17,16 @@ main{max-width:1100px;margin:auto;padding:14px}
 .stat,.panel{background:#0d2940;border:1px solid #21445a;border-radius:12px;padding:14px;text-align:center}
 .stat strong{display:block;color:#55d6be;font-size:25px}
 .stat span{font-size:13px;color:#b8cbd8}
-.tools{display:flex;gap:8px;margin:14px 0;flex-wrap:wrap}
-select,button{padding:12px;background:#102f45;color:white;border:1px solid #376078;border-radius:8px;font-size:14px}
-select{flex:1;min-width:180px}
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:14px 0}
+select,button{width:100%;padding:12px;background:#102f45;color:white;border:1px solid #376078;border-radius:8px;font-size:14px}
 button{cursor:pointer}
 #status{font-size:13px;color:#b8cbd8;margin:10px 2px;line-height:1.6}
-#map{height:65vh;min-height:400px;border-radius:12px;border:1px solid #21445a;z-index:1}
+#map{height:60vh;min-height:350px;border-radius:12px;border:1px solid #21445a;z-index:1}
 .panel{margin-top:14px}
-.panel p{font-size:13px;color:#b8cbd8;line-height:1.6}
+.panel p{font-size:13px;color:#b8cbd8;line-height:1.7}
+#upazilaInfo{margin-top:12px;padding:14px;background:#102f45;border-radius:10px;line-height:1.8;display:none}
 footer{text-align:center;padding:20px;color:#b8cbd8;font-size:12px;line-height:1.8}
-@media(max-width:500px){h1{font-size:32px}#map{height:60vh;min-height:350px}}
+@media(max-width:500px){h1{font-size:32px}.tools{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -42,29 +41,38 @@ footer{text-align:center;padding:20px;color:#b8cbd8;font-size:12px;line-height:1
 <div class="stats">
 <div class="stat"><strong>৮</strong><span>বিভাগ</span></div>
 <div class="stat"><strong id="districtCount">লোড হচ্ছে</strong><span>জেলা</span></div>
-<div class="stat"><strong>১</strong><span>দেশ</span></div>
+<div class="stat"><strong id="upazilaCount">লোড হচ্ছে</strong><span>উপজেলা</span></div>
 </div>
 
 <div class="tools">
 <select id="districtSelect">
-<option value="">জেলা নির্বাচন করে খুঁজুন</option>
+<option value="">জেলা নির্বাচন করো</option>
 </select>
-<button id="showBangladesh">পুরো বাংলাদেশ</button>
+
+<select id="upazilaSelect" disabled>
+<option value="">আগে জেলা নির্বাচন করো</option>
+</select>
+
+<button id="showBangladesh">পুরো বাংলাদেশ দেখাও</button>
 </div>
 
-<div id="status">বাংলাদেশের মানচিত্র লোড হচ্ছে...</div>
+<div id="status">বাংলাদেশের তথ্য লোড হচ্ছে...</div>
 <div id="map"></div>
 
+<div id="upazilaInfo"></div>
+
 <div class="panel">
-<b>DTB — Bangladesh Explorer</b>
-<p>বাংলাদেশের ৮ বিভাগ ও ৬৪ জেলার উন্মুক্ত ভৌগোলিক ডেটাভিত্তিক প্রাথমিক প্রোটোটাইপ।</p>
+<b>DTB — Bangladesh Explorer v1.4</b>
+<p>
+বাংলাদেশের ৮ বিভাগ, ৬৪ জেলা ও ৪৯৪ উপজেলার তথ্যভিত্তিক প্রাথমিক ডিজিটাল এক্সপ্লোরার।
+</p>
 </div>
 </main>
 
 <footer>
-Digital Twin of Bangladesh — Prototype v1.3<br>
+Digital Twin of Bangladesh — Prototype v1.4<br>
 Map © OpenStreetMap contributors<br>
-District boundary data: Bangladesh-geocode (MIT License)
+District boundary and administrative data: Bangladesh-geocode (MIT License)
 </footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -77,49 +85,87 @@ attribution:'© OpenStreetMap contributors'
 }).addTo(map);
 
 const districtURL='https://bayeziddev.github.io/Bangladesh-geocode/geojson/districts.geojson.txt';
+const districtInfoURL='https://bayeziddev.github.io/Bangladesh-geocode/districts/districts.json';
+const upazilaURL='https://bayeziddev.github.io/Bangladesh-geocode/upazilas/upazilas.json';
 
 let districtLayer=null;
 let districtFeatures=[];
+let districtInfo=[];
+let upazilaData=[];
 
 const colors=[
 '#55d6be','#f6bd60','#7da9e8','#e88ca5',
 '#a78bfa','#80c783','#e69b62','#68c5d8'
 ];
 
+function norm(s){
+return String(s||'').toLowerCase().replace(/[^a-z]/g,'');
+}
+
 function districtName(p){
-return p.ADM2_EN || p.shapeName || p.NAME_2 || p.name || 'Unknown';
+return p.ADM2_EN||p.shapeName||p.NAME_2||p.name||'Unknown';
 }
 
 function divisionName(p){
-return p.ADM1_EN || p.NAME_1 || 'তথ্য নেই';
+return p.ADM1_EN||p.NAME_1||'তথ্য নেই';
+}
+
+function getGeoDistrictName(name){
+const aliases={
+'brahmanbaria':'brahamanbaria',
+'chattogram':'chittagong',
+'bogura':'bogra',
+'chapainawabganj':'nawabganj',
+'jashore':'jessore',
+'jhalakathi':'jhalokati',
+'moulvibazar':'maulvibazar',
+'netrokona':'netrakona'
+};
+return aliases[norm(name)]||norm(name);
+}
+
+async function getJSON(url){
+const response=await fetch(url);
+if(!response.ok)throw new Error('ডেটা সার্ভার পাওয়া যায়নি');
+return await response.json();
+}
+
+function getTableData(json,tableName){
+const table=json.find(item=>item.type==='table'&&item.name===tableName);
+if(!table||!Array.isArray(table.data)){
+throw new Error(tableName+' ডেটা সঠিক নয়');
+}
+return table.data;
 }
 
 async function init(){
 const status=document.getElementById('status');
 
 try{
-status.textContent='জেলার তথ্য সংগ্রহ করা হচ্ছে...';
+status.textContent='জেলা ও উপজেলার তথ্য সংগ্রহ করা হচ্ছে...';
 
-const response=await fetch(districtURL);
-if(!response.ok) throw new Error('ডেটা সার্ভার পাওয়া যায়নি');
+const [geoJSON,districtJSON,upazilaJSON]=await Promise.all([
+getJSON(districtURL),
+getJSON(districtInfoURL),
+getJSON(upazilaURL)
+]);
 
-const data=await response.json();
-
-if(data.type!=='FeatureCollection' || !Array.isArray(data.features)){
-throw new Error('GeoJSON ডেটা সঠিক নয়');
+if(geoJSON.type!=='FeatureCollection'||!Array.isArray(geoJSON.features)){
+throw new Error('জেলার মানচিত্রের তথ্য সঠিক নয়');
 }
 
-districtFeatures=data.features;
+districtInfo=getTableData(districtJSON,'districts');
+upazilaData=getTableData(upazilaJSON,'upazilas');
+districtFeatures=geoJSON.features;
 
-districtLayer=L.geoJSON(data,{
+districtLayer=L.geoJSON(geoJSON,{
 style:function(feature){
-const division=divisionName(feature.properties);
-const index=[
+const divisions=[
 'Dhaka','Chittagong','Rajshahi','Khulna',
 'Barisal','Sylhet','Rangpur','Mymensingh'
-].indexOf(division);
-
-return {
+];
+const index=divisions.indexOf(divisionName(feature.properties));
+return{
 color:'#ffffff',
 weight:1.2,
 fillColor:colors[index<0?0:index],
@@ -136,47 +182,126 @@ layer.bindPopup(
 }).addTo(map);
 
 document.getElementById('districtCount').textContent=districtFeatures.length;
+document.getElementById('upazilaCount').textContent=upazilaData.length;
 
-const select=document.getElementById('districtSelect');
+const districtSelect=document.getElementById('districtSelect');
 
-districtFeatures
-.map(f=>districtName(f.properties))
-.sort((a,b)=>a.localeCompare(b))
-.forEach(name=>{
-const option=document.createElement('option');
-option.value=name;
-option.textContent=name;
-select.appendChild(option);
+const geoDistrictMap=new Map();
+districtFeatures.forEach(feature=>{
+geoDistrictMap.set(
+norm(districtName(feature.properties)),
+feature
+);
 });
 
-map.fitBounds(districtLayer.getBounds(),{padding:[10,10]});
+const districtByGeoName=new Map();
 
-status.textContent='সফলভাবে '+districtFeatures.length+' জেলার মানচিত্র লোড হয়েছে। কোনো জেলায় চাপ দিয়ে তথ্য দেখো।';
+districtInfo.forEach(d=>{
+const key=getGeoDistrictName(d.name);
+const feature=geoDistrictMap.get(key);
+if(feature){
+districtByGeoName.set(norm(districtName(feature.properties)),d);
+}
+});
+
+const sortedDistricts=[...districtInfo].sort((a,b)=>
+a.bn_name.localeCompare(b.bn_name,'bn')
+);
+
+sortedDistricts.forEach(d=>{
+const option=document.createElement('option');
+option.value=d.id;
+option.textContent=d.bn_name+' ('+d.name+')';
+districtSelect.appendChild(option);
+});
+
+status.textContent=
+'সফলভাবে '+districtFeatures.length+
+' জেলা ও '+upazilaData.length+
+' উপজেলার তথ্য লোড হয়েছে।';
 
 }catch(error){
 console.error(error);
-status.textContent='ডেটা লোড হয়নি। ইন্টারনেট সংযোগ পরীক্ষা করে আবার চেষ্টা করো।';
+status.textContent='তথ্য লোড হয়নি। ইন্টারনেট সংযোগ পরীক্ষা করে আবার চেষ্টা করো।';
 document.getElementById('districtCount').textContent='—';
+document.getElementById('upazilaCount').textContent='—';
 }
 }
 
 document.getElementById('districtSelect').addEventListener('change',function(){
-const name=this.value;
-if(!name || !districtLayer)return;
+const districtId=this.value;
+const upazilaSelect=document.getElementById('upazilaSelect');
+const info=document.getElementById('upazilaInfo');
 
-districtLayer.eachLayer(layer=>{
-if(districtName(layer.feature.properties)===name){
-map.fitBounds(layer.getBounds(),{padding:[20,20],maxZoom:10});
-layer.openPopup();
+upazilaSelect.innerHTML='<option value="">উপজেলা নির্বাচন করো</option>';
+info.style.display='none';
+
+if(!districtId){
+upazilaSelect.disabled=true;
+return;
 }
+
+const district=districtInfo.find(d=>d.id===districtId);
+if(!district)return;
+
+const matchingUpazilas=upazilaData.filter(u=>u.district_id===districtId);
+
+matchingUpazilas.sort((a,b)=>
+a.bn_name.localeCompare(b.bn_name,'bn')
+);
+
+matchingUpazilas.forEach(u=>{
+const option=document.createElement('option');
+option.value=u.id;
+option.textContent=u.bn_name+' ('+u.name+')';
+upazilaSelect.appendChild(option);
 });
+
+upazilaSelect.disabled=false;
+
+const feature=districtFeatures.find(f=>
+norm(districtName(f.properties))===getGeoDistrictName(district.name)
+);
+
+if(feature){
+const layer=L.geoJSON(feature);
+map.fitBounds(layer.getBounds(),{padding:[20,20],maxZoom:9});
+}
+
+document.getElementById('status').textContent=
+district.bn_name+' জেলায় '+matchingUpazilas.length+'টি উপজেলার তথ্য পাওয়া গেছে।';
+});
+
+document.getElementById('upazilaSelect').addEventListener('change',function(){
+const upazila=upazilaData.find(u=>u.id===this.value);
+if(!upazila)return;
+
+const district=districtInfo.find(d=>d.id===upazila.district_id);
+
+const info=document.getElementById('upazilaInfo');
+info.style.display='block';
+info.innerHTML=
+'<b>উপজেলার তথ্য</b><br>'+
+'বাংলা নাম: '+upazila.bn_name+'<br>'+
+'ইংরেজি নাম: '+upazila.name+'<br>'+
+'জেলা: '+(district?district.bn_name:'তথ্য নেই')+'<br>'+
+'বিভাগ: '+(district?district.division_id:'তথ্য নেই');
+
+document.getElementById('status').textContent=
+upazila.bn_name+' উপজেলার তথ্য দেখানো হচ্ছে।';
 });
 
 document.getElementById('showBangladesh').addEventListener('click',()=>{
 document.getElementById('districtSelect').value='';
+document.getElementById('upazilaSelect').innerHTML=
+'<option value="">আগে জেলা নির্বাচন করো</option>';
+document.getElementById('upazilaSelect').disabled=true;
+document.getElementById('upazilaInfo').style.display='none';
+
 if(districtLayer){
 map.fitBounds(districtLayer.getBounds(),{padding:[10,10]});
 }
+document.getElementById('status').textContent='পুরো বাংলাদেশের মানচিত্র দেখানো হচ্ছে।';
 });
 
 init();
