@@ -4,198 +4,39 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#071827">
-<title>Digital Twin Bangladesh | DTB v1.9</title>
-
+<title>Digital Twin Bangladesh | DTB v2.0</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-
 <style>
 *{box-sizing:border-box}
-
-body{
-margin:0;
-background:#071827;
-color:white;
-font-family:Arial,sans-serif;
-}
-
-header{
-text-align:center;
-padding:24px 12px;
-background:linear-gradient(135deg,#0d2940,#10445a);
-}
-
-h1{
-margin:0;
-color:#55d6be;
-font-size:38px;
-}
-
+body{margin:0;background:#071827;color:white;font-family:Arial,sans-serif}
+header{text-align:center;padding:24px 12px;background:linear-gradient(135deg,#0d2940,#10445a)}
+h1{margin:0;color:#55d6be;font-size:38px}
 header p{margin:7px}
-
-main{
-max-width:1100px;
-margin:auto;
-padding:14px;
-}
-
-.stats{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:10px;
-}
-
-.stat,.panel{
-background:#0d2940;
-border:1px solid #21445a;
-border-radius:12px;
-padding:14px;
-text-align:center;
-}
-
-.stat strong{
-display:block;
-color:#55d6be;
-font-size:25px;
-}
-
-.stat span{
-font-size:13px;
-color:#b8cbd8;
-}
-
-.tools{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:9px;
-margin:14px 0;
-}
-
-input,select,button{
-width:100%;
-padding:12px;
-background:#102f45;
-color:white;
-border:1px solid #376078;
-border-radius:8px;
-font-size:14px;
-}
-
+main{max-width:1100px;margin:auto;padding:14px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.stat,.panel{background:#0d2940;border:1px solid #21445a;border-radius:12px;padding:14px;text-align:center}
+.stat strong{display:block;color:#55d6be;font-size:25px}
+.stat span{font-size:13px;color:#b8cbd8}
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:14px 0}
+input,select,button{width:100%;padding:12px;background:#102f45;color:white;border:1px solid #376078;border-radius:8px;font-size:14px}
 input::placeholder{color:#a9bdca}
-
 button{cursor:pointer}
-
-button:disabled{
-opacity:.5;
-cursor:not-allowed;
-}
-
-#status{
-font-size:13px;
-color:#b8cbd8;
-margin:10px 2px;
-line-height:1.7;
-}
-
-#map{
-height:60vh;
-min-height:350px;
-border-radius:12px;
-border:1px solid #21445a;
-z-index:1;
-}
-
+button:disabled{opacity:.5;cursor:not-allowed}
+#status{font-size:13px;color:#b8cbd8;margin:10px 2px;line-height:1.7}
+#map{height:60vh;min-height:350px;border-radius:12px;border:1px solid #21445a;z-index:1}
 .panel{margin-top:14px}
-
-.panel p{
-font-size:13px;
-color:#b8cbd8;
-line-height:1.7;
-}
-
-.info{
-margin-top:14px;
-padding:16px;
-background:#102f45;
-border:1px solid #376078;
-border-radius:10px;
-line-height:1.9;
-display:none;
-text-align:left;
-}
-
-.info-title{
-color:#55d6be;
-font-weight:bold;
-font-size:18px;
-margin-bottom:8px;
-}
-
-.metric-grid{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:8px;
-margin:12px 0;
-}
-
-.metric{
-background:#0d2940;
-border:1px solid #376078;
-border-radius:9px;
-padding:12px;
-text-align:center;
-}
-
-.metric strong{
-display:block;
-color:#55d6be;
-font-size:19px;
-margin-top:5px;
-}
-
-.metric span{
-font-size:12px;
-color:#b8cbd8;
-}
-
-.note{
-font-size:12px;
-color:#b8cbd8;
-line-height:1.7;
-}
-
-.density-legend{
-background:#0d2940;
-border:1px solid #376078;
-border-radius:10px;
-padding:12px;
-margin-top:12px;
-display:none;
-font-size:13px;
-line-height:2;
-}
-
-.legend-item{
-display:inline-flex;
-align-items:center;
-gap:6px;
-margin:4px 10px 4px 0;
-}
-
-.legend-color{
-width:16px;
-height:16px;
-border-radius:4px;
-display:inline-block;
-}
-
-footer{
-text-align:center;
-padding:20px;
-color:#b8cbd8;
-font-size:12px;
-line-height:1.8;
-}
-
+.panel p{font-size:13px;color:#b8cbd8;line-height:1.7}
+.info{margin-top:14px;padding:16px;background:#102f45;border:1px solid #376078;border-radius:10px;line-height:1.9;display:none;text-align:left}
+.info-title{color:#55d6be;font-weight:bold;font-size:18px;margin-bottom:8px}
+.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.metric{background:#0d2940;border:1px solid #376078;border-radius:9px;padding:12px;text-align:center}
+.metric strong{display:block;color:#55d6be;font-size:19px;margin-top:5px}
+.metric span{font-size:12px;color:#b8cbd8}
+.note{font-size:12px;color:#b8cbd8;line-height:1.7}
+.density-legend{background:#0d2940;border:1px solid #376078;border-radius:10px;padding:12px;margin-top:12px;display:none;font-size:13px;line-height:2}
+.legend-item{display:inline-flex;align-items:center;gap:6px;margin:4px 10px 4px 0}
+.legend-color{width:16px;height:16px;border-radius:4px;display:inline-block}
+footer{text-align:center;padding:20px;color:#b8cbd8;font-size:12px;line-height:1.8}
 @media(max-width:600px){
 h1{font-size:32px}
 .tools{grid-template-columns:1fr}
@@ -204,9 +45,7 @@ h1{font-size:32px}
 }
 </style>
 </head>
-
 <body>
-
 <header>
 <h1>DTB</h1>
 <p><b>Digital Twin of Bangladesh</b></p>
@@ -214,103 +53,51 @@ h1{font-size:32px}
 </header>
 
 <main>
-
 <div class="stats">
-<div class="stat">
-<strong>৮</strong>
-<span>বিভাগ</span>
-</div>
-
-<div class="stat">
-<strong id="districtCount">লোড হচ্ছে</strong>
-<span>জেলা</span>
-</div>
-
-<div class="stat">
-<strong id="upazilaCount">লোড হচ্ছে</strong>
-<span>উপজেলা</span>
-</div>
-
-<div class="stat">
-<strong id="unionCount">লোড হচ্ছে</strong>
-<span>ইউনিয়ন</span>
-</div>
+<div class="stat"><strong>৮</strong><span>বিভাগ</span></div>
+<div class="stat"><strong id="districtCount">লোড হচ্ছে</strong><span>জেলা</span></div>
+<div class="stat"><strong id="upazilaCount">লোড হচ্ছে</strong><span>উপজেলা</span></div>
+<div class="stat"><strong id="unionCount">লোড হচ্ছে</strong><span>ইউনিয়ন</span></div>
 </div>
 
 <div id="countryInfo" class="info"></div>
 
 <div class="tools">
+<input id="districtSearch" placeholder="জেলা খুঁজুন..." disabled>
+<select id="districtSelect"><option value="">জেলা নির্বাচন করো</option></select>
 
-<input id="districtSearch"
-placeholder="জেলা খুঁজুন..." disabled>
+<input id="upazilaSearch" placeholder="উপজেলা খুঁজুন..." disabled>
+<select id="upazilaSelect" disabled><option value="">আগে জেলা নির্বাচন করো</option></select>
 
-<select id="districtSelect">
-<option value="">জেলা নির্বাচন করো</option>
-</select>
+<input id="unionSearch" placeholder="ইউনিয়ন খুঁজুন..." disabled>
+<select id="unionSelect" disabled><option value="">আগে উপজেলা নির্বাচন করো</option></select>
 
-<input id="upazilaSearch"
-placeholder="উপজেলা খুঁজুন..." disabled>
-
-<select id="upazilaSelect" disabled>
-<option value="">আগে জেলা নির্বাচন করো</option>
-</select>
-
-<input id="unionSearch"
-placeholder="ইউনিয়ন খুঁজুন..." disabled>
-
-<select id="unionSelect" disabled>
-<option value="">আগে উপজেলা নির্বাচন করো</option>
-</select>
-
-<button id="showBangladesh">
-পুরো বাংলাদেশ দেখাও
-</button>
-
-<button id="densityToggle">
-জনঘনত্বের মানচিত্র দেখাও
-</button>
-
+<button id="showBangladesh">পুরো বাংলাদেশ দেখাও</button>
+<button id="densityToggle">জেলার জনঘনত্ব দেখাও</button>
+<button id="upazilaDensityToggle" disabled>উপজেলার জনঘনত্ব দেখাও</button>
 </div>
 
-<div id="status">
-বাংলাদেশের তথ্য লোড হচ্ছে...
-</div>
-
+<div id="status">বাংলাদেশের তথ্য লোড হচ্ছে...</div>
 <div id="map"></div>
 
 <div id="densityLegend" class="density-legend">
-<b>জনসংখ্যার ঘনত্ব — প্রতি বর্গকিলোমিটারে</b>
-<br>
+<b>জেলাভিত্তিক জনসংখ্যার ঘনত্ব — প্রতি বর্গকিলোমিটারে</b><br>
+<span class="legend-item"><span class="legend-color" style="background:#2d8a58"></span>৫০০-এর কম</span>
+<span class="legend-item"><span class="legend-color" style="background:#a8c957"></span>৫০০–৯৯৯</span>
+<span class="legend-item"><span class="legend-color" style="background:#f6bd60"></span>১০০০–১৯৯৯</span>
+<span class="legend-item"><span class="legend-color" style="background:#e88c45"></span>২০০০–৩৯৯৯</span>
+<span class="legend-item"><span class="legend-color" style="background:#d94b4b"></span>৪০০০ বা বেশি</span>
+<span class="legend-item"><span class="legend-color" style="background:#777"></span>তথ্য নেই</span>
+</div>
 
-<span class="legend-item">
-<span class="legend-color" style="background:#2d8a58"></span>
-৫০০-এর কম
-</span>
-
-<span class="legend-item">
-<span class="legend-color" style="background:#a8c957"></span>
-৫০০–৯৯৯
-</span>
-
-<span class="legend-item">
-<span class="legend-color" style="background:#f6bd60"></span>
-১০০০–১৯৯৯
-</span>
-
-<span class="legend-item">
-<span class="legend-color" style="background:#e88c45"></span>
-২০০০–৩৯৯৯
-</span>
-
-<span class="legend-item">
-<span class="legend-color" style="background:#d94b4b"></span>
-৪০০০ বা বেশি
-</span>
-
-<span class="legend-item">
-<span class="legend-color" style="background:#777777"></span>
-তথ্য নেই
-</span>
+<div id="upazilaDensityLegend" class="density-legend">
+<b>উপজেলাভিত্তিক জনসংখ্যার ঘনত্ব — প্রতি বর্গকিলোমিটারে</b><br>
+<span class="legend-item"><span class="legend-color" style="background:#2d8a58"></span>৫০০-এর কম</span>
+<span class="legend-item"><span class="legend-color" style="background:#a8c957"></span>৫০০–৯৯৯</span>
+<span class="legend-item"><span class="legend-color" style="background:#f6bd60"></span>১০০০–১৯৯৯</span>
+<span class="legend-item"><span class="legend-color" style="background:#e88c45"></span>২০০০–৩৯৯৯</span>
+<span class="legend-item"><span class="legend-color" style="background:#d94b4b"></span>৪০০০ বা বেশি</span>
+<span class="legend-item"><span class="legend-color" style="background:#777"></span>তথ্য নেই</span>
 </div>
 
 <div id="districtInfo" class="info"></div>
@@ -318,1309 +105,546 @@ placeholder="ইউনিয়ন খুঁজুন..." disabled>
 <div id="unionInfo" class="info"></div>
 
 <div class="panel">
-<b>DTB — Bangladesh Explorer v1.9</b>
-<p>
-বাংলাদেশের ডিজিটাল মানচিত্র, জেলা ও উপজেলার তথ্য,
-জনসংখ্যা, আয়তন এবং জনসংখ্যার ঘনত্বভিত্তিক মানচিত্র।
-</p>
+<b>DTB — Bangladesh Explorer v2.0</b>
+<p>বাংলাদেশের ডিজিটাল মানচিত্র, জেলা, উপজেলা ও ইউনিয়নের তথ্য, জনসংখ্যা, আয়তন এবং জনসংখ্যার ঘনত্বভিত্তিক মানচিত্র।</p>
 </div>
-
 </main>
 
 <footer>
-Digital Twin of Bangladesh — Prototype v1.9<br>
+Digital Twin of Bangladesh — Prototype v2.0<br>
 Map tiles © OpenStreetMap contributors<br>
-Administrative data: Bangladesh-geocode (MIT License)<br>
+Administrative data: Bangladesh-geocode<br>
 Population and area data: Geo Vault enrichment<br>
 Population source: BBS Population and Housing Census 2022<br>
 Area source: HDX Bangladesh COD-AB gazetteer (BBS/OCHA)
 </footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
 <script>
-
-/* MAP SETUP */
-
+/* MAP */
 const map=L.map('map').setView([23.685,90.3563],7);
-
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-maxZoom:18,
-attribution:'© OpenStreetMap contributors'
+maxZoom:18,attribution:'© OpenStreetMap contributors'
 }).addTo(map);
 
-
 /* DATA URLS */
+const districtURL='https://bayeziddev.github.io/Bangladesh-geocode/geojson/districts.geojson.txt';
+const districtInfoURL='https://bayeziddev.github.io/Bangladesh-geocode/districts/districts.json';
+const upazilaURL='https://bayeziddev.github.io/Bangladesh-geocode/upazilas/upazilas.json';
+const divisionURL='https://bayeziddev.github.io/Bangladesh-geocode/divisions/divisions.json';
+const unionURL='https://bayeziddev.github.io/Bangladesh-geocode/unions/unions.json';
+const geoDistrictURL='https://raw.githubusercontent.com/imran110219/geo-vault/main/data/geojson/bd/districts.geojson';
+const geoUpazilaURL='https://raw.githubusercontent.com/imran110219/geo-vault/main/data/geojson/bd/upazilas.geojson';
+const metricDivisionURL='https://raw.githubusercontent.com/imran110219/geo-vault/main/data/countries/bd/formats/divisions/divisions.json';
+const metricDistrictURL='https://raw.githubusercontent.com/imran110219/geo-vault/main/data/countries/bd/formats/districts/districts.json';
+const metricUpazilaURL='https://raw.githubusercontent.com/imran110219/geo-vault/main/data/countries/bd/formats/upazilas/upazilas.json';
 
-const districtURL=
-'https://bayeziddev.github.io/Bangladesh-geocode/geojson/districts.geojson.txt';
+/* GLOBAL DATA */
+let districtLayer=null,upazilaBoundaryLayer=null;
+let districtFeatures=[],districtInfoData=[],upazilaData=[],divisionData=[],unionData=[];
+let geoDistrictFeatures=[],geoUpazilaFeatures=[],currentUpazilaFeatures=[];
+let metricDivisions=[],metricDistricts=[],metricUpazilas=[];
+let densityMode=false,upazilaDensityMode=false;
+let selectedDistrictId=null,selectedUpazilaId=null;
 
-const districtInfoURL=
-'https://bayeziddev.github.io/Bangladesh-geocode/districts/districts.json';
-
-const upazilaURL=
-'https://bayeziddev.github.io/Bangladesh-geocode/upazilas/upazilas.json';
-
-const divisionURL=
-'https://bayeziddev.github.io/Bangladesh-geocode/divisions/divisions.json';
-
-const unionURL=
-'https://bayeziddev.github.io/Bangladesh-geocode/unions/unions.json';
-
-const geoDistrictURL=
-'https://raw.githubusercontent.com/imran110219/geo-vault/main/data/geojson/bd/districts.geojson';
-
-const geoUpazilaURL=
-'https://raw.githubusercontent.com/imran110219/geo-vault/main/data/geojson/bd/upazilas.geojson';
-
-const metricDivisionURL=
-'https://raw.githubusercontent.com/imran110219/geo-vault/main/data/countries/bd/formats/divisions/divisions.json';
-
-const metricDistrictURL=
-'https://raw.githubusercontent.com/imran110219/geo-vault/main/data/countries/bd/formats/districts/districts.json';
-
-const metricUpazilaURL=
-'https://raw.githubusercontent.com/imran110219/geo-vault/main/data/countries/bd/formats/upazilas/upazilas.json';
-
-
-/* GLOBAL VARIABLES */
-
-let districtLayer=null;
-let upazilaBoundaryLayer=null;
-
-let districtFeatures=[];
-let districtInfoData=[];
-let upazilaData=[];
-let divisionData=[];
-let unionData=[];
-
-let geoDistrictFeatures=[];
-let geoUpazilaFeatures=[];
-let currentUpazilaFeatures=[];
-
-let metricDivisions=[];
-let metricDistricts=[];
-let metricUpazilas=[];
-
-let densityMode=false;
-
-const colors=[
-'#55d6be','#f6bd60','#7da9e8','#e88ca5',
-'#a78bfa','#80c783','#e69b62','#68c5d8'
-];
-
+const colors=['#55d6be','#f6bd60','#7da9e8','#e88ca5','#a78bfa','#80c783','#e69b62','#68c5d8'];
 
 /* BASIC FUNCTIONS */
-
-function norm(s){
-return String(s||'')
-.toLowerCase()
-.replace(/[^a-z]/g,'');
-}
-
-function normBn(s){
-return String(s||'')
-.trim()
-.toLowerCase()
-.replace(/\s+/g,' ');
-}
-
+function norm(s){return String(s||'').toLowerCase().replace(/[^a-z]/g,'')}
+function normBn(s){return String(s||'').trim().toLowerCase().replace(/\s+/g,' ')}
 function escapeHTML(s){
-return String(s??'').replace(/[&<>"']/g,c=>({
-'&':'&amp;',
-'<':'&lt;',
-'>':'&gt;',
-'"':'&quot;',
-"'":'&#39;'
-}[c]));
+return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
-
-function districtName(p){
-return p.ADM2_EN||p.shapeName||p.NAME_2||p.name||'Unknown';
-}
-
-function divisionName(p){
-return p.ADM1_EN||p.NAME_1||'';
-}
-
+function districtName(p){return p.ADM2_EN||p.shapeName||p.NAME_2||p.name||'Unknown'}
+function divisionName(p){return p.ADM1_EN||p.NAME_1||''}
 function canonicalDistrict(s){
-
 const n=norm(s);
-
 const aliases=[
-['brahmanbaria','brahamanbaria'],
-['chattogram','chittagong'],
-['bogura','bogra'],
-['chapainawabganj','nawabganj'],
-['jashore','jessore'],
-['jhalakathi','jhalokati'],
-['moulvibazar','maulvibazar'],
-['netrokona','netrakona']
+['brahmanbaria','brahamanbaria'],['chattogram','chittagong'],
+['bogura','bogra'],['chapainawabganj','nawabganj'],
+['jashore','jessore'],['jhalakathi','jhalokati'],
+['moulvibazar','maulvibazar'],['netrokona','netrakona']
 ];
-
-for(const pair of aliases){
-if(pair.includes(n))return pair[0];
-}
-
+for(const pair of aliases){if(pair.includes(n))return pair[0]}
 return n;
 }
-
 async function getJSON(url){
-
 const response=await fetch(url);
-
-if(!response.ok){
-throw new Error('ডেটা সার্ভার পাওয়া যায়নি');
-}
-
+if(!response.ok)throw new Error('ডেটা সার্ভার পাওয়া যায়নি');
 return await response.json();
 }
-
 function getTableData(json,tableName){
-
-const table=json.find(item=>
-item.type==='table'&&item.name===tableName
-);
-
-if(!table||!Array.isArray(table.data)){
-throw new Error(tableName+' ডেটা সঠিক নয়');
-}
-
+const table=json.find(item=>item.type==='table'&&item.name===tableName);
+if(!table||!Array.isArray(table.data))throw new Error(tableName+' ডেটা সঠিক নয়');
 return table.data;
 }
-
-function findById(records,id){
-
-return records.find(item=>
-String(item.id)===String(id)
-);
-}
-
+function findById(records,id){return records.find(item=>String(item.id)===String(id))}
 function numberValue(value){
-
-if(value===null||value===undefined||
-String(value).trim()===''){
-return null;
-}
-
+if(value===null||value===undefined||String(value).trim()==='')return null;
 const n=Number(value);
-
 return Number.isFinite(n)&&n>0?n:null;
 }
-
 function formatNumber(value,digits=0){
-
-if(value===null||value===undefined||
-!Number.isFinite(value)){
-return 'তথ্য নেই';
+if(value===null||value===undefined||!Number.isFinite(value))return 'তথ্য নেই';
+return value.toLocaleString('en-US',{maximumFractionDigits:digits,minimumFractionDigits:0});
 }
-
-return value.toLocaleString('en-US',{
-maximumFractionDigits:digits,
-minimumFractionDigits:0
-});
-}
-
 function getDivisionBangla(id){
-
 const division=findById(divisionData,id);
-
 return division?division.bn_name:'তথ্য পাওয়া যায়নি';
 }
 
-
 /* GEOGRAPHIC MATCHING */
-
 function getDistrictFeature(district){
-
 const target=canonicalDistrict(district.name);
-
-return districtFeatures.find(f=>
-canonicalDistrict(districtName(f.properties))===target
-);
+return districtFeatures.find(f=>canonicalDistrict(districtName(f.properties))===target);
 }
-
 function getGeoDistrict(district){
-
 const target=canonicalDistrict(district.name);
-
-return geoDistrictFeatures.find(f=>
-canonicalDistrict(
-f.properties.name||f.properties.source_name
-)===target
+return geoDistrictFeatures.find(f=>{
+const p=f.properties||{};
+return canonicalDistrict(p.name||p.source_name||p.ADM2_EN)===target;
+});
+}
+function getFeatureUpazila(feature){
+const p=feature.properties||{};
+const english=norm(p.name||p.source_name||p.ADM3_EN||p.NAME_3);
+const bangla=normBn(p.bn_name||p.BN_NAME);
+return upazilaData.find(u=>
+String(u.district_id)===String(selectedDistrictId)&&
+((english&&norm(u.name)===english)||(bangla&&normBn(u.bn_name)===bangla))
 );
 }
-
 function findUpazilaBoundary(upazila){
-
 return currentUpazilaFeatures.find(f=>{
-
 const p=f.properties||{};
-
-const sameEnglish=
-norm(p.name||p.source_name)===norm(upazila.name);
-
-const sameBangla=
-normBn(p.bn_name)===normBn(upazila.bn_name);
-
+const sameEnglish=norm(p.name||p.source_name||p.ADM3_EN||p.NAME_3)===norm(upazila.name);
+const sameBangla=normBn(p.bn_name||p.BN_NAME)===normBn(upazila.bn_name);
 return sameEnglish||sameBangla;
-
 });
 }
 
-
-/* POPULATION AND AREA */
-
+/* METRICS */
 function makeMetricHTML(record){
-
-if(!record){
-
-return '<p class="note">এই এলাকার জনসংখ্যা ও আয়তনের তথ্য পাওয়া যায়নি।</p>';
-
-}
-
-const population=numberValue(record.population);
-const area=numberValue(record.area_sqkm);
-
-const density=(population&&area)?
-population/area:null;
-
+if(!record)return '<p class="note">এই এলাকার জনসংখ্যা ও আয়তনের তথ্য পাওয়া যায়নি।</p>';
+const population=numberValue(record.population),area=numberValue(record.area_sqkm);
+const density=population&&area?population/area:null;
 return `
 <div class="metric-grid">
-
-<div class="metric">
-<span>জনসংখ্যা</span>
-<strong>${population?formatNumber(population):'তথ্য নেই'}</strong>
-</div>
-
-<div class="metric">
-<span>আয়তন</span>
-<strong>${area?formatNumber(area,2)+' km²':'তথ্য নেই'}</strong>
-</div>
-
-<div class="metric">
-<span>জনসংখ্যার ঘনত্ব</span>
-<strong>${density?formatNumber(density)+' জন/km²':'তথ্য নেই'}</strong>
-</div>
-
-</div>
-`;
+<div class="metric"><span>জনসংখ্যা</span><strong>${population?formatNumber(population):'তথ্য নেই'}</strong></div>
+<div class="metric"><span>আয়তন</span><strong>${area?formatNumber(area,2)+' km²':'তথ্য নেই'}</strong></div>
+<div class="metric"><span>জনসংখ্যার ঘনত্ব</span><strong>${density?formatNumber(density)+' জন/km²':'তথ্য নেই'}</strong></div>
+</div>`;
 }
-
 function showCountryMetrics(){
-
-const population=metricDivisions.reduce((sum,d)=>{
-return sum+(numberValue(d.population)||0);
-},0);
-
-const area=metricDivisions.reduce((sum,d)=>{
-return sum+(numberValue(d.area_sqkm)||0);
-},0);
-
+const population=metricDivisions.reduce((sum,d)=>sum+(numberValue(d.population)||0),0);
+const area=metricDivisions.reduce((sum,d)=>sum+(numberValue(d.area_sqkm)||0),0);
 const density=area>0?population/area:null;
-
 const info=document.getElementById('countryInfo');
-
 info.style.display='block';
-
 info.innerHTML=`
-
-<div class="info-title">
-বাংলাদেশ — সামগ্রিক পরিসংখ্যান
-</div>
-
+<div class="info-title">বাংলাদেশ — সামগ্রিক পরিসংখ্যান</div>
 <div class="metric-grid">
-
-<div class="metric">
-<span>মোট জনসংখ্যা (২০২২)</span>
-<strong>${formatNumber(population)}</strong>
+<div class="metric"><span>মোট জনসংখ্যা (২০২২)</span><strong>${formatNumber(population)}</strong></div>
+<div class="metric"><span>মোট আয়তন</span><strong>${formatNumber(area,2)} km²</strong></div>
+<div class="metric"><span>জনসংখ্যার ঘনত্ব</span><strong>${density?formatNumber(density)+' জন/km²':'তথ্য নেই'}</strong></div>
 </div>
-
-<div class="metric">
-<span>মোট আয়তন</span>
-<strong>${formatNumber(area,2)} km²</strong>
-</div>
-
-<div class="metric">
-<span>জনসংখ্যার ঘনত্ব</span>
-<strong>${density?formatNumber(density)+' জন/km²':'তথ্য নেই'}</strong>
-</div>
-
-</div>
-
-<p class="note">
-বিভাগভিত্তিক ডেটার যোগফল থেকে হিসাব করা হয়েছে।
-</p>
-`;
+<p class="note">বিভাগভিত্তিক ডেটার যোগফল থেকে হিসাব করা হয়েছে।</p>`;
 }
-
 function showDistrictMetrics(district){
-
 const record=findById(metricDistricts,district.id);
-
-const division=findById(
-metricDivisions,district.division_id
-);
-
+const division=findById(metricDivisions,district.division_id);
 const info=document.getElementById('districtInfo');
-
 info.style.display='block';
-
 info.innerHTML=`
-
 <div class="info-title">জেলার বিস্তারিত তথ্য</div>
-
-<b>জেলা:</b>
-${escapeHTML(district.bn_name)}
-(${escapeHTML(district.name)})<br>
-
-<b>বিভাগ:</b>
-${escapeHTML(getDivisionBangla(district.division_id))}
-
+<b>জেলা:</b> ${escapeHTML(district.bn_name)} (${escapeHTML(district.name)})<br>
+<b>বিভাগ:</b> ${escapeHTML(getDivisionBangla(district.division_id))}
 ${makeMetricHTML(record)}
-
-<div class="note">
-বিভাগের জনসংখ্যা:
-${division?formatNumber(numberValue(division.population)):'তথ্য নেই'}
-জন
-</div>
-
-<p class="note">
-জনসংখ্যা: BBS জনশুমারি ২০২২।
-আয়তন: HDX COD-AB gazetteer।
-</p>
-`;
+<div class="note">বিভাগের জনসংখ্যা: ${division?formatNumber(numberValue(division.population)):'তথ্য নেই'} জন</div>
+<p class="note">জনসংখ্যা: BBS জনশুমারি ২০২২। আয়তন: HDX COD-AB gazetteer।</p>`;
 }
-
 function showUpazilaMetrics(upazila,district,unionCount){
-
 const record=findById(metricUpazilas,upazila.id);
-
 const info=document.getElementById('upazilaInfo');
-
 info.style.display='block';
-
 info.innerHTML=`
-
 <div class="info-title">উপজেলার বিস্তারিত তথ্য</div>
-
-<b>বাংলা নাম:</b>
-${escapeHTML(upazila.bn_name)}<br>
-
-<b>ইংরেজি নাম:</b>
-${escapeHTML(upazila.name)}<br>
-
-<b>জেলা:</b>
-${escapeHTML(district?district.bn_name:'তথ্য নেই')}<br>
-
-<b>বিভাগ:</b>
-${escapeHTML(district?
-getDivisionBangla(district.division_id):'তথ্য নেই')}<br>
-
+<b>বাংলা নাম:</b> ${escapeHTML(upazila.bn_name)}<br>
+<b>ইংরেজি নাম:</b> ${escapeHTML(upazila.name)}<br>
+<b>জেলা:</b> ${escapeHTML(district?district.bn_name:'তথ্য নেই')}<br>
+<b>বিভাগ:</b> ${escapeHTML(district?getDivisionBangla(district.division_id):'তথ্য নেই')}<br>
 <b>ইউনিয়ন সংখ্যা:</b> ${unionCount}টি<br>
-
-<b>উপজেলা আইডি:</b>
-${escapeHTML(upazila.id)}
-
+<b>উপজেলা আইডি:</b> ${escapeHTML(upazila.id)}
 ${makeMetricHTML(record)}
-
-<p class="note">
-জনসংখ্যা: BBS জনশুমারি ২০২২।
-আয়তন: HDX COD-AB gazetteer।
-</p>
-` ;
+<p class="note">জনসংখ্যা: BBS জনশুমারি ২০২২। আয়তন: HDX COD-AB gazetteer।</p>`;
 }
 
-
-/* DENSITY HEATMAP */
-
-function getDistrictDensity(feature){
-
-const name=canonicalDistrict(
-districtName(feature.properties)
-);
-
-const district=districtInfoData.find(d=>
-canonicalDistrict(d.name)===name
-);
-
-if(!district)return null;
-
-const record=findById(metricDistricts,district.id);
-
-if(!record)return null;
-
-const population=numberValue(record.population);
-const area=numberValue(record.area_sqkm);
-
-if(!population||!area)return null;
-
-return population/area;
-}
-
+/* DENSITY COLORS */
 function densityColor(value){
-
 if(value===null)return '#777777';
-
 if(value<500)return '#2d8a58';
-
 if(value<1000)return '#a8c957';
-
 if(value<2000)return '#f6bd60';
-
 if(value<4000)return '#e88c45';
-
 return '#d94b4b';
 }
-
+function getDistrictDensity(feature){
+const name=canonicalDistrict(districtName(feature.properties));
+const district=districtInfoData.find(d=>canonicalDistrict(d.name)===name);
+if(!district)return null;
+const record=findById(metricDistricts,district.id);
+if(!record)return null;
+const population=numberValue(record.population),area=numberValue(record.area_sqkm);
+return population&&area?population/area:null;
+}
 function getDistrictStyle(feature){
-
 if(densityMode){
-
 const density=getDistrictDensity(feature);
-
-return{
-color:'#ffffff',
-weight:1.2,
-fillColor:densityColor(density),
-fillOpacity:0.75
-};
-
+return {color:'#fff',weight:1.2,fillColor:densityColor(density),fillOpacity:.75};
 }
-
-const divisions=[
-'Dhaka','Chittagong','Rajshahi','Khulna',
-'Barisal','Sylhet','Rangpur','Mymensingh'
-];
-
-const index=divisions.indexOf(
-divisionName(feature.properties)
-);
-
-return{
-color:'#ffffff',
-weight:1.2,
-fillColor:colors[index<0?0:index],
-fillOpacity:0.48
-};
+const divisions=['Dhaka','Chittagong','Rajshahi','Khulna','Barisal','Sylhet','Rangpur','Mymensingh'];
+const index=divisions.indexOf(divisionName(feature.properties));
+return {color:'#fff',weight:1.2,fillColor:colors[index<0?0:index],fillOpacity:.48};
 }
-
 function updateDistrictMapStyle(){
+if(districtLayer)districtLayer.eachLayer(layer=>layer.setStyle(getDistrictStyle(layer.feature)));
+}
+function toggleDensityMode(){
+if(!metricDistricts.length){
+document.getElementById('status').textContent='জনসংখ্যার ডেটা পাওয়া যায়নি।';return;
+}
+densityMode=!densityMode;
+updateDistrictMapStyle();
+document.getElementById('densityLegend').style.display=densityMode?'block':'none';
+document.getElementById('densityToggle').textContent=densityMode?'বিভাগভিত্তিক রং দেখাও':'জেলার জনঘনত্ব দেখাও';
+document.getElementById('status').textContent=densityMode?'জেলাভিত্তিক জনসংখ্যার ঘনত্ব দেখানো হচ্ছে।':'স্বাভাবিক বিভাগভিত্তিক মানচিত্র দেখানো হচ্ছে।';
+}
 
-if(!districtLayer)return;
-
-districtLayer.eachLayer(layer=>{
-
-layer.setStyle(getDistrictStyle(layer.feature));
-
+/* UPAZILA HEATMAP — NEW IN v2.0 */
+function getUpazilaDensity(feature){
+const upazila=getFeatureUpazila(feature);
+if(!upazila)return null;
+const record=findById(metricUpazilas,upazila.id);
+if(!record)return null;
+const population=numberValue(record.population),area=numberValue(record.area_sqkm);
+return population&&area?population/area:null;
+}
+function updateUpazilaMapStyle(){
+if(!upazilaBoundaryLayer)return;
+upazilaBoundaryLayer.eachLayer(layer=>{
+const feature=layer.feature;
+const upazila=getFeatureUpazila(feature);
+const selected=upazila&&String(upazila.id)===String(selectedUpazilaId);
+const density=getUpazilaDensity(feature);
+let fill=upazilaDensityMode?densityColor(density):'#55d6be';
+if(selected)fill='#f6bd60';
+layer.setStyle({
+color:selected?'#fff':(upazilaDensityMode?'#fff':'#c9f5e9'),
+weight:selected?3:1.3,
+fillColor:fill,
+fillOpacity:selected?.78:(upazilaDensityMode?.78:.28)
+});
 });
 }
-
-function toggleDensityMode(){
-
-if(!metricDistricts.length){
-
-document.getElementById('status').textContent=
-'জনসংখ্যার ডেটা পাওয়া যায়নি।';
-
-return;
+function toggleUpazilaDensityMode(){
+if(!metricUpazilas.length){
+document.getElementById('status').textContent='উপজেলার জনসংখ্যার ডেটা পাওয়া যায়নি।';return;
+}
+if(!upazilaBoundaryLayer){
+document.getElementById('status').textContent='প্রথমে একটি জেলা নির্বাচন করো।';return;
+}
+upazilaDensityMode=!upazilaDensityMode;
+updateUpazilaMapStyle();
+document.getElementById('upazilaDensityLegend').style.display=upazilaDensityMode?'block':'none';
+document.getElementById('upazilaDensityToggle').textContent=upazilaDensityMode?'উপজেলার সাধারণ রং দেখাও':'উপজেলার জনঘনত্ব দেখাও';
+document.getElementById('status').textContent=upazilaDensityMode?'নির্বাচিত জেলার উপজেলা অনুযায়ী জনঘনত্ব দেখানো হচ্ছে।':'উপজেলার সাধারণ মানচিত্র দেখানো হচ্ছে।';
 }
 
-densityMode=!densityMode;
-
-updateDistrictMapStyle();
-
-document.getElementById('densityLegend').style.display=
-densityMode?'block':'none';
-
-document.getElementById('densityToggle').textContent=
-densityMode?
-'বিভাগভিত্তিক রং দেখাও':
-'জনঘনত্বের মানচিত্র দেখাও';
-
-document.getElementById('status').textContent=
-densityMode?
-'জেলাভিত্তিক জনসংখ্যার ঘনত্বের মানচিত্র দেখানো হচ্ছে।':
-'স্বাভাবিক বিভাগভিত্তিক মানচিত্র দেখানো হচ্ছে।';
-}
-
-
-/* UNION AND SELECT RESET */
-
+/* RESET FUNCTIONS */
 function resetUnion(){
-
-const search=document.getElementById('unionSearch');
-const select=document.getElementById('unionSelect');
-
-search.value='';
-search.disabled=true;
-
-select.innerHTML=
-'<option value="">আগে উপজেলা নির্বাচন করো</option>';
-
+const search=document.getElementById('unionSearch'),select=document.getElementById('unionSelect');
+search.value='';search.disabled=true;
+select.innerHTML='<option value="">আগে উপজেলা নির্বাচন করো</option>';
 select.disabled=true;
-
 document.getElementById('unionInfo').style.display='none';
 }
-
 function clearUpazilaLayer(){
-
-if(upazilaBoundaryLayer){
-
-map.removeLayer(upazilaBoundaryLayer);
-
-upazilaBoundaryLayer=null;
-
-}
-
+if(upazilaBoundaryLayer){map.removeLayer(upazilaBoundaryLayer);upazilaBoundaryLayer=null}
 currentUpazilaFeatures=[];
 }
-
 function resetUpazilas(){
-
-const search=document.getElementById('upazilaSearch');
-const select=document.getElementById('upazilaSelect');
-
-search.value='';
-search.disabled=true;
-
-select.innerHTML=
-'<option value="">আগে জেলা নির্বাচন করো</option>';
-
+const search=document.getElementById('upazilaSearch'),select=document.getElementById('upazilaSelect');
+search.value='';search.disabled=true;
+select.innerHTML='<option value="">আগে জেলা নির্বাচন করো</option>';
 select.disabled=true;
-
-resetUnion();
-clearUpazilaLayer();
-
+resetUnion();clearUpazilaLayer();
+selectedDistrictId=null;selectedUpazilaId=null;
 document.getElementById('upazilaInfo').style.display='none';
 }
 
-
 /* DISTRICT DROPDOWN */
-
 function fillDistrictOptions(){
-
-const search=document.getElementById('districtSearch');
-const select=document.getElementById('districtSelect');
-
-const query=search.value.trim().toLowerCase();
-const previous=select.value;
-
-const filtered=districtInfoData.filter(d=>
-(d.bn_name||'').toLowerCase().includes(query)||
-(d.name||'').toLowerCase().includes(query)
-);
-
-select.innerHTML=
-'<option value="">জেলা নির্বাচন করো</option>';
-
-filtered.sort((a,b)=>
-(a.bn_name||'').localeCompare(b.bn_name||'','bn')
-);
-
+const search=document.getElementById('districtSearch'),select=document.getElementById('districtSelect');
+const query=search.value.trim().toLowerCase(),previous=select.value;
+const filtered=districtInfoData.filter(d=>(d.bn_name||'').toLowerCase().includes(query)||(d.name||'').toLowerCase().includes(query));
+select.innerHTML='<option value="">জেলা নির্বাচন করো</option>';
+filtered.sort((a,b)=>(a.bn_name||'').localeCompare(b.bn_name||'','bn'));
 filtered.forEach(d=>{
-
 const option=document.createElement('option');
-
-option.value=d.id;
-
-option.textContent=
-d.bn_name+' ('+d.name+')';
-
+option.value=d.id;option.textContent=d.bn_name+' ('+d.name+')';
 select.appendChild(option);
-
 });
-
-if(filtered.some(d=>String(d.id)===previous)){
-
-select.value=previous;
-
-}else if(previous){
-
-select.value='';
-
-resetUpazilas();
-
+if(filtered.some(d=>String(d.id)===previous))select.value=previous;
+else if(previous){
+select.value='';resetUpazilas();
 document.getElementById('districtInfo').style.display='none';
-
 }
 }
-
 
 /* UPAZILA DROPDOWN */
-
 function fillUpazilaOptions(){
-
-const districtId=
-document.getElementById('districtSelect').value;
-
-const search=document.getElementById('upazilaSearch');
-const select=document.getElementById('upazilaSelect');
-
-const query=search.value.trim().toLowerCase();
-const previous=select.value;
-
-const filtered=upazilaData.filter(u=>
-String(u.district_id)===String(districtId)&&
-(
-(u.bn_name||'').toLowerCase().includes(query)||
-(u.name||'').toLowerCase().includes(query)
-)
-);
-
-select.innerHTML=
-'<option value="">উপজেলা নির্বাচন করো</option>';
-
-filtered.sort((a,b)=>
-(a.bn_name||'').localeCompare(b.bn_name||'','bn')
-);
-
+const districtId=document.getElementById('districtSelect').value;
+const search=document.getElementById('upazilaSearch'),select=document.getElementById('upazilaSelect');
+const query=search.value.trim().toLowerCase(),previous=select.value;
+const filtered=upazilaData.filter(u=>String(u.district_id)===String(districtId)&&((u.bn_name||'').toLowerCase().includes(query)||(u.name||'').toLowerCase().includes(query)));
+select.innerHTML='<option value="">উপজেলা নির্বাচন করো</option>';
+filtered.sort((a,b)=>(a.bn_name||'').localeCompare(b.bn_name||'','bn'));
 filtered.forEach(u=>{
-
 const option=document.createElement('option');
-
-option.value=u.id;
-
-option.textContent=
-u.bn_name+' ('+u.name+')';
-
+option.value=u.id;option.textContent=u.bn_name+' ('+u.name+')';
 select.appendChild(option);
-
 });
-
-if(filtered.some(u=>String(u.id)===previous)){
-select.value=previous;
+if(filtered.some(u=>String(u.id)===previous))select.value=previous;
+if(filtered.length===0)select.innerHTML='<option value="">কোনো উপজেলা পাওয়া যায়নি</option>';
 }
-
-if(filtered.length===0){
-
-select.innerHTML=
-'<option value="">কোনো উপজেলা পাওয়া যায়নি</option>';
-
-}
-}
-
 
 /* UNION DROPDOWN */
-
 function fillUnionOptions(){
-
-const upazilaId=
-document.getElementById('upazilaSelect').value;
-
-const search=document.getElementById('unionSearch');
-const select=document.getElementById('unionSelect');
-
-const query=search.value.trim().toLowerCase();
-const previous=select.value;
-
-const filtered=unionData.filter(u=>
-String(u.upazilla_id)===String(upazilaId)&&
-(
-(u.bn_name||'').toLowerCase().includes(query)||
-(u.name||'').toLowerCase().includes(query)
-)
-);
-
-select.innerHTML=
-'<option value="">ইউনিয়ন নির্বাচন করো</option>';
-
-filtered.sort((a,b)=>
-(a.bn_name||'').localeCompare(b.bn_name||'','bn')
-);
-
+const upazilaId=document.getElementById('upazilaSelect').value;
+const search=document.getElementById('unionSearch'),select=document.getElementById('unionSelect');
+const query=search.value.trim().toLowerCase(),previous=select.value;
+const filtered=unionData.filter(u=>String(u.upazilla_id)===String(upazilaId)&&((u.bn_name||'').toLowerCase().includes(query)||(u.name||'').toLowerCase().includes(query)));
+select.innerHTML='<option value="">ইউনিয়ন নির্বাচন করো</option>';
+filtered.sort((a,b)=>(a.bn_name||'').localeCompare(b.bn_name||'','bn'));
 filtered.forEach(u=>{
-
 const option=document.createElement('option');
-
-option.value=u.id;
-
-option.textContent=
-u.bn_name+' ('+u.name+')';
-
+option.value=u.id;option.textContent=u.bn_name+' ('+u.name+')';
 select.appendChild(option);
-
 });
-
-if(filtered.some(u=>String(u.id)===previous)){
-select.value=previous;
+if(filtered.some(u=>String(u.id)===previous))select.value=previous;
+if(filtered.length===0)select.innerHTML='<option value="">কোনো ইউনিয়ন পাওয়া যায়নি</option>';
 }
 
-if(filtered.length===0){
-
-select.innerHTML=
-'<option value="">কোনো ইউনিয়ন পাওয়া যায়নি</option>';
-
-}
-}
-
-
-/* UPAZILA BOUNDARY MAP */
-
+/* UPAZILA BOUNDARIES */
 function showDistrictUpazilaBoundaries(district){
-
 clearUpazilaLayer();
-
+selectedDistrictId=district.id;
+selectedUpazilaId=null;
 const geoDistrict=getGeoDistrict(district);
-
 if(!geoDistrict||!geoDistrict.properties.pcode){
-
-document.getElementById('status').textContent=
-'এই জেলার উপজেলা সীমানার সঙ্গে মিল পাওয়া যায়নি।';
-
-return;
+document.getElementById('status').textContent='এই জেলার উপজেলা সীমানার সঙ্গে মিল পাওয়া যায়নি।';return;
 }
-
-const districtPcode=
-String(geoDistrict.properties.pcode);
-
-currentUpazilaFeatures=geoUpazilaFeatures.filter(f=>
-String(f.properties.parent_pcode)===districtPcode
-);
-
+const districtPcode=String(geoDistrict.properties.pcode);
+currentUpazilaFeatures=geoUpazilaFeatures.filter(f=>String(f.properties.parent_pcode)===districtPcode);
 if(currentUpazilaFeatures.length===0){
-
-document.getElementById('status').textContent=
-'এই জেলার উপজেলা সীমানার তথ্য পাওয়া যায়নি।';
-
-return;
+document.getElementById('status').textContent='এই জেলার উপজেলা সীমানার তথ্য পাওয়া যায়নি।';return;
 }
-
 upazilaBoundaryLayer=L.geoJSON({
-
-type:'FeatureCollection',
-features:currentUpazilaFeatures
-
+type:'FeatureCollection',features:currentUpazilaFeatures
 },{
-
-style:{
-color:'#ffffff',
-weight:1.5,
-fillColor:'#55d6be',
-fillOpacity:0.28
+style:feature=>{
+const density=getUpazilaDensity(feature);
+return {color:'#fff',weight:1.3,fillColor:upazilaDensityMode?densityColor(density):'#55d6be',fillOpacity:upazilaDensityMode?.78:.28};
 },
-
-onEachFeature:function(feature,layer){
-
+onEachFeature:(feature,layer)=>{
 const p=feature.properties||{};
-
+const upazila=getFeatureUpazila(feature);
+const record=upazila?findById(metricUpazilas,upazila.id):null;
+const density=getUpazilaDensity(feature);
 layer.bindPopup(
-
-'<b>উপজেলা: '+
-escapeHTML(p.bn_name||p.name||'তথ্য নেই')+
-'</b><br>ইংরেজি নাম: '+
-escapeHTML(p.name||'তথ্য নেই')
-
+'<b>উপজেলা: '+escapeHTML(p.bn_name||p.name||p.ADM3_EN||'তথ্য নেই')+'</b>'+
+'<br>ইংরেজি নাম: '+escapeHTML(p.name||p.source_name||p.ADM3_EN||'তথ্য নেই')+
+'<br>জনসংখ্যা: '+(record?formatNumber(numberValue(record.population)):'তথ্য নেই')+
+'<br>আয়তন: '+(record?formatNumber(numberValue(record.area_sqkm),2)+' km²':'তথ্য নেই')+
+'<br>জনঘনত্ব: '+(density?formatNumber(density)+' জন/km²':'তথ্য নেই')
 );
-
 }
-
 }).addTo(map);
-
-map.fitBounds(upazilaBoundaryLayer.getBounds(),{
-padding:[15,15],
-maxZoom:9
-});
-
-document.getElementById('status').textContent=
-district.bn_name+' জেলার '+
-currentUpazilaFeatures.length+
-'টি উপজেলা সীমানা মানচিত্রে দেখানো হয়েছে।';
-
+updateUpazilaMapStyle();
+map.fitBounds(upazilaBoundaryLayer.getBounds(),{padding:[15,15],maxZoom:9});
+document.getElementById('status').textContent=district.bn_name+' জেলার '+currentUpazilaFeatures.length+'টি উপজেলা সীমানা দেখানো হয়েছে।';
 }
-
 function selectUpazilaBoundary(upazila){
-
 if(!upazilaBoundaryLayer)return false;
-
 const selected=findUpazilaBoundary(upazila);
-
-upazilaBoundaryLayer.eachLayer(layer=>{
-
-const isSelected=
-selected&&layer.feature===selected;
-
-layer.setStyle({
-
-color:isSelected?'#ffffff':'#c9f5e9',
-
-weight:isSelected?3:1.3,
-
-fillColor:isSelected?'#f6bd60':'#55d6be',
-
-fillOpacity:isSelected?0.75:0.25
-
-});
-
-});
-
+selectedUpazilaId=upazila.id;
+updateUpazilaMapStyle();
 if(selected){
-
 const selectedLayer=L.geoJSON(selected);
-
-map.fitBounds(selectedLayer.getBounds(),{
-padding:[25,25],
-maxZoom:11
-});
-
+map.fitBounds(selectedLayer.getBounds(),{padding:[25,25],maxZoom:11});
 return true;
-
 }
-
 return false;
-
 }
-
-
-/* LOAD POPULATION DATA */
-
-async function loadMetricData(){
-
-const results=await Promise.allSettled([
-
-getJSON(metricDivisionURL),
-getJSON(metricDistrictURL),
-getJSON(metricUpazilaURL)
-
-]);
-
-try{
-
-if(results[0].status==='fulfilled'){
-
-metricDivisions=
-getTableData(results[0].value,'divisions');
-
-}
-
-if(results[1].status==='fulfilled'){
-
-metricDistricts=
-getTableData(results[1].value,'districts');
-
-}
-
-if(results[2].status==='fulfilled'){
-
-metricUpazilas=
-getTableData(results[2].value,'upazilas');
-
-}
-
-const ready=
-metricDivisions.length>0&&
-metricDistricts.length>0&&
-metricUpazilas.length>0;
-
-return Boolean(ready);
-
-}catch(error){
-
-console.error('Metric data error:',error);
-
-return false;
-
-}
-
-}
-
-
-/* MAIN INITIALIZATION */
-
-async function init(){
-
-const status=document.getElementById('status');
-
-try{
-
-status.textContent=
-'বাংলাদেশের প্রশাসনিক ও মানচিত্রের তথ্য লোড হচ্ছে...';
-
-const [
-
-geoJSON,
-districtJSON,
-upazilaJSON,
-divisionJSON,
-unionJSON,
-geoDistrictJSON,
-geoUpazilaJSON
-
-]=await Promise.all([
-
-getJSON(districtURL),
-getJSON(districtInfoURL),
-getJSON(upazilaURL),
-getJSON(divisionURL),
-getJSON(unionURL),
-getJSON(geoDistrictURL),
-getJSON(geoUpazilaURL)
-
-]);
-
-if(geoJSON.type!=='FeatureCollection'||
-!Array.isArray(geoJSON.features)){
-
-throw new Error('জেলার মানচিত্রের তথ্য সঠিক নয়');
-
-}
-
-if(geoUpazilaJSON.type!=='FeatureCollection'||
-!Array.isArray(geoUpazilaJSON.features)){
-
-throw new Error('উপজেলার সীমানার তথ্য সঠিক নয়');
-
-}
-
-districtInfoData=
-getTableData(districtJSON,'districts');
-
-upazilaData=
-getTableData(upazilaJSON,'upazilas');
-
-divisionData=
-getTableData(divisionJSON,'divisions');
-
-unionData=
-getTableData(unionJSON,'unions');
-
-districtFeatures=geoJSON.features;
-
-geoDistrictFeatures=
-geoDistrictJSON.features||[];
-
-geoUpazilaFeatures=
-geoUpazilaJSON.features;
-
-
-/* DISTRICT MAP */
-
-districtLayer=L.geoJSON(geoJSON,{
-
-style:function(feature){
-
-return getDistrictStyle(feature);
-
-},
-
-onEachFeature:function(feature,layer){
-
-const p=feature.properties;
-
-const density=getDistrictDensity(feature);
-
-layer.bindPopup(
-
-'<b>জেলা: '+
-escapeHTML(districtName(p))+
-'</b><br>বিভাগ: '+
-escapeHTML(divisionName(p))+
-'<br>জনসংখ্যার ঘনত্ব: '+
-(density?formatNumber(density)+' জন/km²':'তথ্য নেই')
-
-);
-
-}
-
-}).addTo(map);
-
-
-/* COUNTS */
-
-document.getElementById('districtCount').textContent=
-districtInfoData.length;
-
-document.getElementById('upazilaCount').textContent=
-upazilaData.length;
-
-document.getElementById('unionCount').textContent=
-unionData.length;
-
-
-/* ENABLE SEARCH */
-
-document.getElementById('districtSearch').disabled=false;
-
-fillDistrictOptions();
-
 
 /* LOAD METRICS */
-
-const metricsReady=await loadMetricData();
-
-if(metricsReady){
-
-showCountryMetrics();
-
-document.getElementById('densityToggle').disabled=false;
-
-updateDistrictMapStyle();
-
-status.textContent=
-'তথ্য লোড সম্পন্ন: '+
-districtInfoData.length+' জেলা, '+
-upazilaData.length+' উপজেলা, '+
-unionData.length+
-' ইউনিয়ন। জনসংখ্যা ও আয়তনের ডেটাও প্রস্তুত।';
-
-}else{
-
-status.textContent=
-'মানচিত্র ও প্রশাসনিক তথ্য লোড হয়েছে, তবে কিছু জনসংখ্যা/আয়তনের তথ্য পাওয়া যায়নি।';
-
+async function loadMetricData(){
+const results=await Promise.allSettled([
+getJSON(metricDivisionURL),getJSON(metricDistrictURL),getJSON(metricUpazilaURL)
+]);
+try{
+if(results[0].status==='fulfilled')metricDivisions=getTableData(results[0].value,'divisions');
+if(results[1].status==='fulfilled')metricDistricts=getTableData(results[1].value,'districts');
+if(results[2].status==='fulfilled')metricUpazilas=getTableData(results[2].value,'upazilas');
+return Boolean(metricDivisions.length&&metricDistricts.length&&metricUpazilas.length);
+}catch(error){
+console.error('Metric data error:',error);return false;
+}
 }
 
+/* INITIALIZATION */
+async function init(){
+const status=document.getElementById('status');
+try{
+status.textContent='বাংলাদেশের প্রশাসনিক ও মানচিত্রের তথ্য লোড হচ্ছে...';
+const [geoJSON,districtJSON,upazilaJSON,divisionJSON,unionJSON,geoDistrictJSON,geoUpazilaJSON]=await Promise.all([
+getJSON(districtURL),getJSON(districtInfoURL),getJSON(upazilaURL),
+getJSON(divisionURL),getJSON(unionURL),getJSON(geoDistrictURL),getJSON(geoUpazilaURL)
+]);
+if(geoJSON.type!=='FeatureCollection'||!Array.isArray(geoJSON.features))throw new Error('জেলার মানচিত্রের তথ্য সঠিক নয়');
+if(geoUpazilaJSON.type!=='FeatureCollection'||!Array.isArray(geoUpazilaJSON.features))throw new Error('উপজেলার সীমানার তথ্য সঠিক নয়');
+
+districtInfoData=getTableData(districtJSON,'districts');
+upazilaData=getTableData(upazilaJSON,'upazilas');
+divisionData=getTableData(divisionJSON,'divisions');
+unionData=getTableData(unionJSON,'unions');
+districtFeatures=geoJSON.features;
+geoDistrictFeatures=geoDistrictJSON.features||[];
+geoUpazilaFeatures=geoUpazilaJSON.features;
+
+districtLayer=L.geoJSON(geoJSON,{
+style:feature=>getDistrictStyle(feature),
+onEachFeature:(feature,layer)=>{
+const p=feature.properties,density=getDistrictDensity(feature);
+layer.bindPopup(
+'<b>জেলা: '+escapeHTML(districtName(p))+'</b>'+
+'<br>বিভাগ: '+escapeHTML(divisionName(p))+
+'<br>জনসংখ্যার ঘনত্ব: '+(density?formatNumber(density)+' জন/km²':'তথ্য নেই')
+);
+}
+}).addTo(map);
+
+document.getElementById('districtCount').textContent=districtInfoData.length;
+document.getElementById('upazilaCount').textContent=upazilaData.length;
+document.getElementById('unionCount').textContent=unionData.length;
+document.getElementById('districtSearch').disabled=false;
+fillDistrictOptions();
+
+const metricsReady=await loadMetricData();
+if(metricsReady){
+showCountryMetrics();
+document.getElementById('densityToggle').disabled=false;
+document.getElementById('upazilaDensityToggle').disabled=false;
+updateDistrictMapStyle();
+status.textContent='তথ্য লোড সম্পন্ন: '+districtInfoData.length+' জেলা, '+upazilaData.length+' উপজেলা, '+unionData.length+' ইউনিয়ন। জনসংখ্যা ও আয়তনের ডেটাও প্রস্তুত।';
+}else{
+status.textContent='মানচিত্র ও প্রশাসনিক তথ্য লোড হয়েছে, তবে কিছু জনসংখ্যা/আয়তনের তথ্য পাওয়া যায়নি।';
+}
 }catch(error){
-
 console.error(error);
-
-status.textContent=
-'তথ্য লোড হয়নি। ইন্টারনেট সংযোগ পরীক্ষা করো। সমস্যা থাকলে আমাকে জানাও।';
-
+status.textContent='তথ্য লোড হয়নি। ইন্টারনেট সংযোগ পরীক্ষা করো। সমস্যা থাকলে আমাকে জানাও।';
 document.getElementById('districtCount').textContent='—';
 document.getElementById('upazilaCount').textContent='—';
 document.getElementById('unionCount').textContent='—';
-
+}
 }
 
-}
+/* EVENTS */
+document.getElementById('districtSearch').addEventListener('input',fillDistrictOptions);
 
-
-/* EVENT LISTENERS */
-
-
-/* DISTRICT SEARCH */
-
-document.getElementById('districtSearch')
-.addEventListener('input',()=>{
-
-fillDistrictOptions();
-
-});
-
-
-/* DISTRICT SELECT */
-
-document.getElementById('districtSelect')
-.addEventListener('change',function(){
-
+document.getElementById('districtSelect').addEventListener('change',function(){
 const districtId=this.value;
-
 resetUpazilas();
-
 document.getElementById('upazilaInfo').style.display='none';
-
 document.getElementById('unionInfo').style.display='none';
-
 if(!districtId){
-
-document.getElementById('districtInfo').style.display='none';
-
-return;
-
+document.getElementById('districtInfo').style.display='none';return;
 }
-
 const district=findById(districtInfoData,districtId);
-
 if(!district)return;
-
-const matching=upazilaData.filter(u=>
-String(u.district_id)===String(districtId)
-);
-
+const matching=upazilaData.filter(u=>String(u.district_id)===String(districtId));
 document.getElementById('upazilaSearch').disabled=false;
-
 document.getElementById('upazilaSelect').disabled=false;
-
 fillUpazilaOptions();
-
 const feature=getDistrictFeature(district);
-
 if(feature){
-
 const layer=L.geoJSON(feature);
-
-map.fitBounds(layer.getBounds(),{
-padding:[20,20],
-maxZoom:9
-});
-
+map.fitBounds(layer.getBounds(),{padding:[20,20],maxZoom:9});
 }
-
 showDistrictUpazilaBoundaries(district);
-
 showDistrictMetrics(district);
-
-status.textContent=
-district.bn_name+' জেলায় '+
-matching.length+
-'টি উপজেলা রয়েছে। জেলার জনসংখ্যা ও আয়তনের তথ্য দেখানো হচ্ছে।';
-
+document.getElementById('status').textContent=district.bn_name+' জেলায় '+matching.length+'টি উপজেলা রয়েছে। জেলার জনসংখ্যা ও আয়তনের তথ্য দেখানো হচ্ছে।';
 });
 
+document.getElementById('upazilaSearch').addEventListener('input',fillUpazilaOptions);
 
-/* UPAZILA SEARCH */
-
-document.getElementById('upazilaSearch')
-.addEventListener('input',()=>{
-
-fillUpazilaOptions();
-
-});
-
-
-/* UPAZILA SELECT */
-
-document.getElementById('upazilaSelect')
-.addEventListener('change',function(){
-
+document.getElementById('upazilaSelect').addEventListener('change',function(){
 resetUnion();
-
 const upazila=findById(upazilaData,this.value);
-
 if(!upazila)return;
-
-const district=findById(
-districtInfoData,
-upazila.district_id
-);
-
-const matching=unionData.filter(u=>
-String(u.upazilla_id)===String(upazila.id)
-);
-
+const district=findById(districtInfoData,upazila.district_id);
+const matching=unionData.filter(u=>String(u.upazilla_id)===String(upazila.id));
 document.getElementById('unionSearch').disabled=false;
-
 document.getElementById('unionSelect').disabled=false;
-
 fillUnionOptions();
-
 showUpazilaMetrics(upazila,district,matching.length);
-
 const found=selectUpazilaBoundary(upazila);
-
-status.textContent=found?
-
-upazila.bn_name+
-' উপজেলার সীমানা ও পরিসংখ্যান দেখানো হচ্ছে।':
-
-upazila.bn_name+
-'-এর তথ্য দেখানো হচ্ছে; সীমানার নামের সঙ্গে মিল পাওয়া যায়নি।';
-
+document.getElementById('status').textContent=found?
+upazila.bn_name+' উপজেলার সীমানা ও পরিসংখ্যান দেখানো হচ্ছে।':
+upazila.bn_name+'-এর তথ্য দেখানো হচ্ছে; সীমানার নামের সঙ্গে মিল পাওয়া যায়নি।';
 });
 
+document.getElementById('unionSearch').addEventListener('input',fillUnionOptions);
 
-/* UNION SEARCH */
-
-document.getElementById('unionSearch')
-.addEventListener('input',()=>{
-
-fillUnionOptions();
-
-});
-
-
-/* UNION SELECT */
-
-document.getElementById('unionSelect')
-.addEventListener('change',function(){
-
+document.getElementById('unionSelect').addEventListener('change',function(){
 const union=findById(unionData,this.value);
-
 if(!union)return;
-
-const upazila=findById(
-upazilaData,
-union.upazilla_id
-);
-
-const district=upazila?
-findById(districtInfoData,upazila.district_id):
-null;
-
+const upazila=findById(upazilaData,union.upazilla_id);
+const district=upazila?findById(districtInfoData,upazila.district_id):null;
 const info=document.getElementById('unionInfo');
-
 info.style.display='block';
-
 info.innerHTML=
-
 '<div class="info-title">ইউনিয়নের বিস্তারিত তথ্য</div>'+
-
-'<b>বাংলা নাম:</b> '+
-escapeHTML(union.bn_name)+'<br>'+
-
-'<b>ইংরেজি নাম:</b> '+
-escapeHTML(union.name)+'<br>'+
-
-'<b>উপজেলা:</b> '+
-escapeHTML(upazila?upazila.bn_name:'তথ্য নেই')+'<br>'+
-
-'<b>জেলা:</b> '+
-escapeHTML(district?district.bn_name:'তথ্য নেই')+'<br>'+
-
-'<b>বিভাগ:</b> '+
-escapeHTML(district?
-getDivisionBangla(district.division_id):'তথ্য নেই')+'<br>'+
-
-'<b>ইউনিয়ন আইডি:</b> '+
-escapeHTML(union.id);
-
-status.textContent=
-union.bn_name+' ইউনিয়নের তথ্য দেখানো হচ্ছে।';
-
+'<b>বাংলা নাম:</b> '+escapeHTML(union.bn_name)+'<br>'+
+'<b>ইংরেজি নাম:</b> '+escapeHTML(union.name)+'<br>'+
+'<b>উপজেলা:</b> '+escapeHTML(upazila?upazila.bn_name:'তথ্য নেই')+'<br>'+
+'<b>জেলা:</b> '+escapeHTML(district?district.bn_name:'তথ্য নেই')+'<br>'+
+'<b>বিভাগ:</b> '+escapeHTML(district?getDivisionBangla(district.division_id):'তথ্য নেই')+'<br>'+
+'<b>ইউনিয়ন আইডি:</b> '+escapeHTML(union.id);
+document.getElementById('status').textContent=union.bn_name+' ইউনিয়নের তথ্য দেখানো হচ্ছে।';
 });
 
-
-/* SHOW BANGLADESH */
-
-document.getElementById('showBangladesh')
-.addEventListener('click',()=>{
-
+document.getElementById('showBangladesh').addEventListener('click',()=>{
 document.getElementById('districtSearch').value='';
-
 document.getElementById('districtSelect').value='';
-
 fillDistrictOptions();
-
 resetUpazilas();
-
 document.getElementById('districtInfo').style.display='none';
-
 document.getElementById('upazilaInfo').style.display='none';
-
 document.getElementById('unionInfo').style.display='none';
-
-if(metricDivisions.length){
-
-showCountryMetrics();
-
-}
-
-if(districtLayer){
-
-map.fitBounds(districtLayer.getBounds(),{
-padding:[10,10]
+upazilaDensityMode=false;
+document.getElementById('upazilaDensityLegend').style.display='none';
+document.getElementById('upazilaDensityToggle').textContent='উপজেলার জনঘনত্ব দেখাও';
+if(metricDivisions.length)showCountryMetrics();
+if(districtLayer)map.fitBounds(districtLayer.getBounds(),{padding:[10,10]});
+document.getElementById('status').textContent='পুরো বাংলাদেশের মানচিত্র ও সামগ্রিক পরিসংখ্যান দেখানো হচ্ছে।';
 });
 
-}
-
-status.textContent=
-'পুরো বাংলাদেশের মানচিত্র ও সামগ্রিক পরিসংখ্যান দেখানো হচ্ছে।';
-
-});
-
-
-/* DENSITY HEATMAP BUTTON */
-
-document.getElementById('densityToggle')
-.addEventListener('click',toggleDensityMode);
-
+document.getElementById('densityToggle').addEventListener('click',toggleDensityMode);
+document.getElementById('upazilaDensityToggle').addEventListener('click',toggleUpazilaDensityMode);
 
 /* START */
-
 init();
-
 </script>
-
 </body>
 </html>
