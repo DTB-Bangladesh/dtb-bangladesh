@@ -14,7 +14,7 @@ header{text-align:center;padding:24px 12px;background:linear-gradient(135deg,#0d
 h1{margin:0;color:#55d6be;font-size:38px}
 header p{margin:7px}
 main{max-width:1100px;margin:auto;padding:14px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .stat,.panel{background:#0d2940;border:1px solid #21445a;border-radius:12px;padding:14px;text-align:center}
 .stat strong{display:block;color:#55d6be;font-size:25px}
 .stat span{font-size:13px;color:#b8cbd8}
@@ -29,12 +29,17 @@ button{cursor:pointer}
 #map{height:60vh;min-height:350px;border-radius:12px;border:1px solid #21445a;z-index:1}
 .panel{margin-top:14px}
 .panel p{font-size:13px;color:#b8cbd8;line-height:1.7}
-#upazilaInfo{margin-top:14px;padding:16px;background:#102f45;border:1px solid #376078;border-radius:10px;line-height:2;display:none;text-align:left}
+.info{
+margin-top:14px;padding:16px;background:#102f45;
+border:1px solid #376078;border-radius:10px;
+line-height:2;display:none;text-align:left
+}
 .info-title{color:#55d6be;font-weight:bold;font-size:18px}
 footer{text-align:center;padding:20px;color:#b8cbd8;font-size:12px;line-height:1.8}
-@media(max-width:500px){
+@media(max-width:600px){
 h1{font-size:32px}
 .tools{grid-template-columns:1fr}
+.stats{grid-template-columns:repeat(2,1fr)}
 }
 </style>
 </head>
@@ -52,6 +57,7 @@ h1{font-size:32px}
 <div class="stat"><strong>৮</strong><span>বিভাগ</span></div>
 <div class="stat"><strong id="districtCount">লোড হচ্ছে</strong><span>জেলা</span></div>
 <div class="stat"><strong id="upazilaCount">লোড হচ্ছে</strong><span>উপজেলা</span></div>
+<div class="stat"><strong id="unionCount">লোড হচ্ছে</strong><span>ইউনিয়ন</span></div>
 </div>
 
 <div class="tools">
@@ -65,24 +71,31 @@ h1{font-size:32px}
 <option value="">আগে জেলা নির্বাচন করো</option>
 </select>
 
+<input id="unionSearch" placeholder="ইউনিয়ন খুঁজুন..." disabled>
+<select id="unionSelect" disabled>
+<option value="">আগে উপজেলা নির্বাচন করো</option>
+</select>
+
 <button id="showBangladesh">পুরো বাংলাদেশ দেখাও</button>
 </div>
 
 <div id="status">বাংলাদেশের তথ্য লোড হচ্ছে...</div>
 <div id="map"></div>
-<div id="upazilaInfo"></div>
+
+<div id="upazilaInfo" class="info"></div>
+<div id="unionInfo" class="info"></div>
 
 <div class="panel">
-<b>DTB — Bangladesh Explorer v1.5</b>
+<b>DTB — Bangladesh Explorer v1.6</b>
 <p>
-বাংলাদেশের ৮ বিভাগ, ৬৪ জেলা ও ৪৯৪ উপজেলার তথ্যভিত্তিক ডিজিটাল এক্সপ্লোরার।
+বাংলাদেশের ৮ বিভাগ, ৬৪ জেলা, ৪৯৪ উপজেলা ও ৪,৫৪০ ইউনিয়নের তথ্যভিত্তিক ডিজিটাল এক্সপ্লোরার।
 </p>
 </div>
 
 </main>
 
 <footer>
-Digital Twin of Bangladesh — Prototype v1.5<br>
+Digital Twin of Bangladesh — Prototype v1.6<br>
 Map © OpenStreetMap contributors<br>
 Administrative data: Bangladesh-geocode (MIT License)
 </footer>
@@ -101,12 +114,14 @@ const districtURL='https://bayeziddev.github.io/Bangladesh-geocode/geojson/distr
 const districtInfoURL='https://bayeziddev.github.io/Bangladesh-geocode/districts/districts.json';
 const upazilaURL='https://bayeziddev.github.io/Bangladesh-geocode/upazilas/upazilas.json';
 const divisionURL='https://bayeziddev.github.io/Bangladesh-geocode/divisions/divisions.json';
+const unionURL='https://bayeziddev.github.io/Bangladesh-geocode/unions/unions.json';
 
 let districtLayer=null;
 let districtFeatures=[];
 let districtInfo=[];
 let upazilaData=[];
 let divisionData=[];
+let unionData=[];
 
 const colors=[
 '#55d6be','#f6bd60','#7da9e8','#e88ca5',
@@ -172,13 +187,28 @@ norm(districtName(f.properties))===target
 );
 }
 
+function resetUnion(){
+const search=document.getElementById('unionSearch');
+const select=document.getElementById('unionSelect');
+
+search.value='';
+search.disabled=true;
+select.innerHTML='<option value="">আগে উপজেলা নির্বাচন করো</option>';
+select.disabled=true;
+
+document.getElementById('unionInfo').style.display='none';
+}
+
 function resetUpazilas(){
 const search=document.getElementById('upazilaSearch');
 const select=document.getElementById('upazilaSelect');
+
 search.value='';
 search.disabled=true;
 select.innerHTML='<option value="">আগে জেলা নির্বাচন করো</option>';
 select.disabled=true;
+
+resetUnion();
 document.getElementById('upazilaInfo').style.display='none';
 }
 
@@ -251,17 +281,57 @@ select.innerHTML='<option value="">কোনো উপজেলা পাওয়�
 }
 }
 
+function fillUnionOptions(){
+const upazilaId=document.getElementById('upazilaSelect').value;
+const search=document.getElementById('unionSearch');
+const select=document.getElementById('unionSelect');
+const query=search.value.trim().toLowerCase();
+const previous=select.value;
+
+const filtered=unionData.filter(u=>
+String(u.upazilla_id)===String(upazilaId)&&
+(
+(u.bn_name||'').toLowerCase().includes(query)||
+(u.name||'').toLowerCase().includes(query)
+)
+);
+
+select.innerHTML='<option value="">ইউনিয়ন নির্বাচন করো</option>';
+
+filtered.sort((a,b)=>
+(a.bn_name||'').localeCompare(b.bn_name||'','bn')
+);
+
+filtered.forEach(u=>{
+const option=document.createElement('option');
+option.value=u.id;
+option.textContent=u.bn_name+' ('+u.name+')';
+select.appendChild(option);
+});
+
+if(filtered.some(u=>String(u.id)===previous)){
+select.value=previous;
+}
+
+if(filtered.length===0){
+select.innerHTML='<option value="">কোনো ইউনিয়ন পাওয়া যায়নি</option>';
+}
+}
+
 async function init(){
 const status=document.getElementById('status');
 
 try{
-status.textContent='জেলা, উপজেলা ও বিভাগের তথ্য সংগ্রহ করা হচ্ছে...';
+status.textContent='জেলা, উপজেলা, ইউনিয়ন ও বিভাগের তথ্য সংগ্রহ করা হচ্ছে...';
 
-const [geoJSON,districtJSON,upazilaJSON,divisionJSON]=await Promise.all([
+const [
+geoJSON,districtJSON,upazilaJSON,divisionJSON,unionJSON
+]=await Promise.all([
 getJSON(districtURL),
 getJSON(districtInfoURL),
 getJSON(upazilaURL),
-getJSON(divisionURL)
+getJSON(divisionURL),
+getJSON(unionURL)
 ]);
 
 if(geoJSON.type!=='FeatureCollection'||!Array.isArray(geoJSON.features)){
@@ -271,6 +341,7 @@ throw new Error('জেলার মানচিত্রের তথ্য স
 districtInfo=getTableData(districtJSON,'districts');
 upazilaData=getTableData(upazilaJSON,'upazilas');
 divisionData=getTableData(divisionJSON,'divisions');
+unionData=getTableData(unionJSON,'unions');
 districtFeatures=geoJSON.features;
 
 districtLayer=L.geoJSON(geoJSON,{
@@ -280,6 +351,7 @@ const divisions=[
 'Barisal','Sylhet','Rangpur','Mymensingh'
 ];
 const index=divisions.indexOf(divisionName(feature.properties));
+
 return{
 color:'#ffffff',
 weight:1.2,
@@ -298,20 +370,24 @@ layer.bindPopup(
 
 document.getElementById('districtCount').textContent=districtInfo.length;
 document.getElementById('upazilaCount').textContent=upazilaData.length;
+document.getElementById('unionCount').textContent=unionData.length;
 
 document.getElementById('districtSearch').disabled=false;
 fillDistrictOptions();
 
 status.textContent=
 'সফলভাবে '+districtInfo.length+' জেলা, '+
-upazilaData.length+' উপজেলা ও '+
+upazilaData.length+' উপজেলা, '+
+unionData.length+' ইউনিয়ন ও '+
 divisionData.length+' বিভাগের তথ্য লোড হয়েছে।';
 
 }catch(error){
 console.error(error);
 status.textContent='তথ্য লোড হয়নি। ইন্টারনেট সংযোগ পরীক্ষা করে আবার চেষ্টা করো।';
+
 document.getElementById('districtCount').textContent='—';
 document.getElementById('upazilaCount').textContent='—';
+document.getElementById('unionCount').textContent='—';
 }
 }
 
@@ -325,7 +401,9 @@ resetUpazilas();
 
 if(!districtId)return;
 
-const district=districtInfo.find(d=>String(d.id)===String(districtId));
+const district=districtInfo.find(d=>
+String(d.id)===String(districtId)
+);
 if(!district)return;
 
 const matching=upazilaData.filter(u=>
@@ -352,12 +430,24 @@ fillUpazilaOptions();
 });
 
 document.getElementById('upazilaSelect').addEventListener('change',function(){
-const upazila=upazilaData.find(u=>String(u.id)===String(this.value));
+resetUnion();
+
+const upazila=upazilaData.find(u=>
+String(u.id)===String(this.value)
+);
 if(!upazila)return;
 
 const district=districtInfo.find(d=>
 String(d.id)===String(upazila.district_id)
 );
+
+const matching=unionData.filter(u=>
+String(u.upazilla_id)===String(upazila.id)
+);
+
+document.getElementById('unionSearch').disabled=false;
+document.getElementById('unionSelect').disabled=false;
+fillUnionOptions();
 
 const info=document.getElementById('upazilaInfo');
 info.style.display='block';
@@ -368,15 +458,51 @@ info.innerHTML=
 '<b>ইংরেজি নাম:</b> '+escapeHTML(upazila.name)+'<br>'+
 '<b>জেলা:</b> '+escapeHTML(district?district.bn_name:'তথ্য নেই')+'<br>'+
 '<b>বিভাগ:</b> '+escapeHTML(district?getDivisionBangla(district.division_id):'তথ্য নেই')+'<br>'+
+'<b>ইউনিয়ন সংখ্যা:</b> '+matching.length+'টি<br>'+
 '<b>উপজেলা আইডি:</b> '+escapeHTML(upazila.id);
 
 document.getElementById('status').textContent=
-upazila.bn_name+' উপজেলার তথ্য দেখানো হচ্ছে।';
+upazila.bn_name+' উপজেলায় '+matching.length+'টি ইউনিয়নের তথ্য পাওয়া গেছে।';
+});
+
+document.getElementById('unionSearch').addEventListener('input',()=>{
+fillUnionOptions();
+});
+
+document.getElementById('unionSelect').addEventListener('change',function(){
+const union=unionData.find(u=>
+String(u.id)===String(this.value)
+);
+if(!union)return;
+
+const upazila=upazilaData.find(u=>
+String(u.id)===String(union.upazilla_id)
+);
+
+const district=upazila?districtInfo.find(d=>
+String(d.id)===String(upazila.district_id)
+):null;
+
+const info=document.getElementById('unionInfo');
+info.style.display='block';
+
+info.innerHTML=
+'<div class="info-title">ইউনিয়নের বিস্তারিত তথ্য</div>'+
+'<b>বাংলা নাম:</b> '+escapeHTML(union.bn_name)+'<br>'+
+'<b>ইংরেজি নাম:</b> '+escapeHTML(union.name)+'<br>'+
+'<b>উপজেলা:</b> '+escapeHTML(upazila?upazila.bn_name:'তথ্য নেই')+'<br>'+
+'<b>জেলা:</b> '+escapeHTML(district?district.bn_name:'তথ্য নেই')+'<br>'+
+'<b>বিভাগ:</b> '+escapeHTML(district?getDivisionBangla(district.division_id):'তথ্য নেই')+'<br>'+
+'<b>ইউনিয়ন আইডি:</b> '+escapeHTML(union.id);
+
+document.getElementById('status').textContent=
+union.bn_name+' ইউনিয়নের তথ্য দেখানো হচ্ছে।';
 });
 
 document.getElementById('showBangladesh').addEventListener('click',()=>{
 document.getElementById('districtSearch').value='';
 document.getElementById('districtSelect').value='';
+
 fillDistrictOptions();
 resetUpazilas();
 
